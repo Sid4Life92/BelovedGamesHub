@@ -91,19 +91,37 @@ button:hover {
 }
 
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 90%;
-  height: 20px; /* adjust the height as needed */
-  background-color: #f5f5f500; /* adjust the background color as needed */
-  text-align: left;
-  padding: 10px;
-  box-sizing: border-box;
-  z-index: 1000;
+  padding: 1.5em 9%;
+  display: flex;
+  align-items: center;
+  background: var(--clr-bg);
+}
+.footer .footer-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.footer .footer-wrapper .footer-info p {
+  font-size: 16px;
+  letter-spacing: 0.8px;
+  color: var(--first);
 }
 
-.footer p {
-  margin-bottom: 10px;
+/* add this media query */
+@media only screen and (max-width: 768px) {
+
+  .footer {
+  padding: 1.2em 5%;
+}
+.footer .footer-wrapper {
+  flex-direction: column-reverse;
+  text-align: center;
+}
+.footer .footer-wrapper .footer-info {
+  line-height: 1.5em;
+}
+
 }
 
   </style>
@@ -286,7 +304,13 @@ button:hover {
     }
   </script>
 <footer class="footer">
-  Copyright © 2025 | Pantelis Vintsis (S1D4L1F3) | All Rights Reserved
-</footer>
+        <div class="container">
+            <div class="footer-wrapper">
+                <div class="footer-info">
+                    <p>Copyright &copy; 2025 | Pantelis Vintsis (S1D4L1F3) | All Rights Reserved</p>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
