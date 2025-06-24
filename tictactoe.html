@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tic-Tac-Toe</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <style>
+body {
+  text-align: center;
+  background-color: #0066ff;
+}
+    
+.board {
+  display: inline-block;
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+  font-size: 40px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cell {
+  width: 100px;
+  height: 100px;
+  border: 1px solid #a7a6a6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 36px;
+  cursor: pointer;
+}
+
+#result {
+  font-size: 24px;
+  margin-top: 20px;
+}
+
+button {
+  background-color: #4CAF50;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+.back-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: #4CAF50;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background-color: #45a049;
+}
+
+.mute-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background-color: #4CAF50;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.mute-button:hover {
+  background-color: #45a049;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 90%;
+  height: 20px; /* adjust the height as needed */
+  background-color: #f5f5f500; /* adjust the background color as needed */
+  text-align: left;
+  padding: 10px;
+}
+
+.footer p {
+  margin-bottom: 10px;
+}
+
+  </style>
+</head>
+<body>
+  <button class="back-button" onclick="window.location.href='index.html'">Back to Gaming Hub</button>
+  <button class="mute-button" id="mute-button">
+    <i class="fas fa-volume-up"></i>
+  </button>
+  <h1>Tic-Tac-Toe</h1>
+  <div class="board">
+    <div class="row">
+      <div class="cell" id="cell-0"></div>
+      <div class="cell" id="cell-1"></div>
+      <div class="cell" id="cell-2"></div>
+    </div>
+    <div class="row">
+      <div class="cell" id="cell-3"></div>
+      <div class="cell" id="cell-4"></div>
+      <div class="cell" id="cell-5"></div>
+    </div>
+    <div class="row">
+      <div class="cell" id="cell-6"></div>
+      <div class="cell" id="cell-7"></div>
+      <div class="cell" id="cell-8"></div>
+    </div>
+  </div>
+  <p id="result"></p>
+  <button id="play-with-computer">Play with Computer</button>
+  <button id="play-with-player">Play with Player</button>
+
+  <audio id="win-sound" src="sounds/win.mp3"></audio>
+
+  <script>
+    const cells = document.querySelectorAll('.cell');
+    const resultParagraph = document.getElementById('result');
+    const playWithComputerButton = document.getElementById('play-with-computer');
+    const playWithPlayerButton = document.getElementById('play-with-player');
+    const winSound = document.getElementById('win-sound');
+    const muteButton = document.getElementById('mute-button');
+
+    let currentPlayer = 'X';
+    let gameOver = false;
+    let playWithComputer = false;
+    let muted = false;
+
+    playWithComputerButton.addEventListener('click', () => {
+      playWithComputer = true;
+      startGame();
+    });
+
+    playWithPlayerButton.addEventListener('click', () => {
+      playWithComputer = false;
+      startGame();
+    });
+
+    muteButton.addEventListener('click', () => {
+      muted = !muted;
+      if (muted) {
+        muteButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
+        winSound.muted = true;
+      } else {
+        muteButton.innerHTML = '<i class="fas fa-volume-up"></i>';
+        winSound.muted = false;
+      }
+    });
+
+    function startGame() {
+      cells.forEach(cell => {
+        cell.textContent = '';
+        cell.style.pointerEvents = 'auto'; // Enable clicks
+      });
+      resultParagraph.textContent = '';
+      gameOver = false;
+      currentPlayer = 'X';
+    }
+
+    cells.forEach(cell => {
+      cell.addEventListener('click', () => {
+        if (!gameOver && cell.textContent === '') {
+          cell.textContent = currentPlayer;
+          cell.style.pointerEvents = 'none'; // Disable clicks for this cell
+          checkForWin();
+          if (!gameOver) {
+            if (playWithComputer) {
+              currentPlayer = 'O'; // Switch to computer
+              setTimeout(computerMove, 500); // Add a short delay for realism
+            } else {
+              currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            }
+          }
+        }
+      });
+    });
+
+    function checkForWin() {
+      const winningCombinations = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+      ];
+
+      for (const combination of winningCombinations) {
+        const [a, b, c] = combination;
+        if (
+          cells[a].textContent === cells[b].textContent &&
+          cells[a].textContent === cells[c].textContent &&
+          cells[a].textContent !== ''
+        ) {
+          resultParagraph.textContent = `Player ${cells[a].textContent} wins!`;
+          gameOver = true;
+          cells.forEach(cell => (cell.style.pointerEvents = 'none')); // Disable clicks
+          if (!muted) winSound.play(); // Play win sound if not muted
+          return;
+        }
+      }
+
+      if ([...cells].every(cell => cell.textContent !== '')) {
+        resultParagraph.textContent = 'It\'s a draw!';
+        gameOver = true;
+      }
+    }
+
+    function computerMove() {
+      // Check if the computer can win
+      if (makeStrategicMove('O')) return;
+
+      // Block the player's win
+      if (makeStrategicMove('X')) return;
+
+      // Fallback to a random move
+      const emptyCells = [...cells].filter(cell => cell.textContent === '');
+      if (emptyCells.length === 0) return;
+
+      const randomIndex = Math.floor(Math.random() * emptyCells.length);
+      const cell = emptyCells[randomIndex];
+      cell.textContent = currentPlayer;
+      cell.style.pointerEvents = 'none';
+
+      checkForWin();
+
+      if (!gameOver) {
+        currentPlayer = 'X'; // Switch back to player
+      }
+    }
+
+    function makeStrategicMove(player) {
+      const winningCombinations = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+      ];
+
+      for (const combination of winningCombinations) {
+        const [a, b, c] = combination;
+        const values = [cells[a].textContent, cells[b].textContent, cells[c].textContent];
+
+        if (values.filter(v => v === player).length === 2 && values.includes('')) {
+          const emptyIndex = values.indexOf('');
+          const cellIndex = combination[emptyIndex];
+          cells[cellIndex].textContent = currentPlayer;
+          cells[cellIndex].style.pointerEvents = 'none';
+          checkForWin();
+          if (!gameOver) currentPlayer = 'X'; // Switch back to player
+          return true;
+        }
+      }
+
+      return false;
+    }
+  </script>
+<footer class="footer">
+  Copyright © 2025 | Pantelis Vintsis (S1D4L1F3) | All Rights Reserved
+</footer>
+</body>
+</html>

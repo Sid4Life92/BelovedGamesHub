@@ -1,0 +1,365 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Rock, Paper, Scissors</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <style>
+body {
+  font-family: 'Montserrat';
+  text-align: center;
+  background-color: #0066ff;
+}
+
+h1 {
+  font-size: 36px;
+}
+
+#game-container {
+  width: 400px;
+  margin: 30px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  background-color: #fff;
+}
+
+.container{
+  padding: 2vh 0;
+}
+
+#inside{
+  margin: auto;
+  width: 45%;
+  height: 50%;
+  border-radius: 25px;
+  padding: 2vh 0;
+}
+
+
+h1{
+  font-size: 40px;
+}
+
+p{
+  color: #000000;
+}
+
+hr{
+  width: 50%;
+
+}
+
+.img-weapon{
+  max-width: 110px;
+  height: auto
+}
+
+.choice{
+  margin: auto;
+}
+
+.select-choice{
+  display: inline-block;
+  border: 5px solid #000000;
+  border-radius: 80px;
+  margin: 1rem;
+  transition: all 0.6s ease;
+}
+
+#rock:hover, #paper:hover, #scissors:hover{
+  background-color: #a6a6a6;
+  cursor: pointer;
+}
+
+#rock{
+  background-color: #4aecec;
+  box-shadow: 5px 7px 8px #888888;
+}
+
+#paper{
+  background-color: #ec4194;
+  box-shadow: 5px 7px 8px #888888;
+}
+
+#scissors{
+  background-color: #f3db53;
+  box-shadow: 5px 7px 8px #888888;
+}
+
+.result{
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+
+.win-border {
+  border: 5px solid #3bff00;
+  box-shadow: 0px 0px 12px #3bff00;
+}
+
+.lose-border{
+  border: 5px solid #ff0000;
+  box-shadow: 0px 0px 12px #ff0000;
+
+}
+
+.tie-border{
+  border: 5px solid #0000ff;
+  box-shadow: 0px 0px 12px #0000ff;
+}
+
+.scores > p{
+  color: #000000;
+  font-size: 1.7rem;
+  font-weight: 600;
+  padding: 0.5rem;
+  margin: 0;
+}
+
+#reset-button {
+  width: 100%;
+  height: 40px;
+  font-size: 18px;
+  padding: 10px;
+  background-color: #af4c4c;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#reset-button:hover {
+  background-color: #8e3e3e;
+}
+
+.back-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: #4CAF50;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+    
+.back-button:hover {
+  background-color: #45a049;
+}
+
+.mute-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background-color: #4CAF50;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.mute-button:hover {
+  background-color: #45a049;
+}
+
+.footer {
+  position: absolute;
+  bottom: 50;
+  width: 90%;
+  height: 20px; /* adjust the height as needed */
+  background-color: #f5f5f500; /* adjust the background color as needed */
+  text-align: left;
+  padding: 10px;
+}
+
+.footer p {
+  margin-bottom: 10px;
+}
+
+  </style>
+</head>
+<body>
+  <button class="back-button" onclick="window.location.href='index.html'">Back to Gaming Hub</button>
+  <button class="mute-button" id="mute-button">
+    <i class="fas fa-volume-up"></i>
+  </button>
+  <h1>Rock, Paper, Scissors</h1>
+  <div id="game-container">
+  <div class="choice">
+    <div class="select-choice" id="rock">
+      <img class="img-weapon" src=images/rock.png alt="Selection - rock">
+    </div>
+    <div class="select-choice" id="paper">
+      <img class="img-weapon" src="images/paper.png" alt="Selection - paper">
+    </div>
+    <div class="select-choice" id="scissors">
+      <img class="img-weapon" src="images/scissors.png" alt="Selection - scissors">
+    </div>
+    <audio id="correct-guess-sound" src="sounds/correct.mp3"></audio>
+    <audio id="wrong-guess-sound" src="sounds/wrong.mp3"></audio>
+    <audio id="repeat-sound" src="sounds/repeat.mp3"></audio>
+  </div>
+
+  <div class="result">
+    <p id="message">Face your luck against the computer.</p>
+  </div>
+
+  <div class="scores">
+    <p class="total-score">Your score: <span id="user-score">0</span></p>
+    <p class="total-score">Computer's score: <span id="computer-score">0</span></p>
+    <button id="reset-button">Reset Score</button>
+  </div>
+  </div>
+  <script>
+let userScore = 0;
+let computerScore = 0;
+let isClickable = true; // Flag to control clicks
+
+const userScoreSpan = document.getElementById("user-score");
+const computerScoreSpan = document.getElementById("computer-score");
+const scoresDiv = document.querySelector(".scores");
+const resultDiv = document.querySelector(".result > p");
+const resetButton = document.getElementById("reset-button")
+
+const rockDiv = document.getElementById("rock");
+const paperDiv = document.getElementById("paper");
+const scissorsDiv = document.getElementById("scissors");
+
+// Generating computer choice at random
+const getComputerChoice = () => {
+  const choiceList = ["rock", "paper", "scissors"];
+  const randomNumber = Math.floor(Math.random()*3);
+  return (choiceList[randomNumber]);
+};
+
+// Convert lowercase choice to uppercase
+const convertToUp = (word) => {
+  switch(word) {
+    case "rock":
+      return "Rock";
+      break;
+    case "paper":
+      return "Paper";
+      break;
+    case "scissors":
+      return "Scissors";
+      break;
+  }
+};
+
+// Output for user win
+const win = (userChoice, computerChoice) => {
+  userScore++;
+  userScoreSpan.innerHTML = userScore;
+  const randomWin = ["beats", "smashes", "destroys", "obliterates"];
+  const randomNumber = Math.floor(Math.random() * 4);
+  const winEmojis = ["😁", "💃🏽", "👏🏽", "😅", "😎", "🙌🏽"]
+  const randomNumberEmoji = Math.floor(Math.random() * 6);
+  resultDiv.innerHTML = `${convertToUp(userChoice)} ${randomWin[randomNumber]} ${convertToUp(computerChoice)}. You win! ${winEmojis[randomNumberEmoji]}`;
+  document.getElementById("correct-guess-sound").play();
+  document.getElementById(userChoice).classList.add('win-border')
+  setTimeout(() => document.getElementById(userChoice).classList.remove('win-border'), 600);
+};
+
+// Output for user lose / computer win
+const lose = (userChoice, computerChoice) => {
+  computerScore++;
+  computerScoreSpan.innerHTML = computerScore;
+  const randomWin = ["beats", "smashes", "destroys", "obliterates"];
+  const randomNumber = Math.floor(Math.random() * 4);
+  const loseEmojis = ["😩", "😾", "💩", "😭", "😡", "🤨", "🤦🏽"]
+  const randomNumberEmoji = Math.floor(Math.random() * 7);
+  resultDiv.innerHTML = `${convertToUp(computerChoice)} ${randomWin[randomNumber]} ${convertToUp(userChoice)}. You lose! ${loseEmojis[randomNumberEmoji]}`;
+  document.getElementById("wrong-guess-sound").play();
+  document.getElementById(userChoice).classList.add('lose-border');
+  setTimeout(() => document.getElementById(userChoice).classList.remove('lose-border'), 600);
+
+};
+
+// Output for tie
+const tie = (userChoice, computerChoice) => {
+  const tieEmojis = ["🤯", "😱", "🙈", "🧐", "🙀", "🙃"];
+  const randomNumberEmoji = Math.floor(Math.random() * 6);
+  resultDiv.innerHTML = `${convertToUp(computerChoice)} matches ${convertToUp(userChoice)}. It's a tie! ${tieEmojis[randomNumberEmoji]}`;
+  document.getElementById("repeat-sound").play();
+  document.getElementById(userChoice).classList.add('tie-border');
+  setTimeout(() => document.getElementById(userChoice).classList.remove('tie-border'), 600);
+};
+
+// Comparing computerChoice and userChoice
+const game = (userChoice) => {
+  if (!isClickable) return; // Prevent further clicks if not clickable
+  isClickable = false; // Block further clicks
+  const computerChoice = getComputerChoice();
+
+  switch (userChoice + computerChoice) {
+    case "paperrock":
+    case "rockscissors":
+    case "scissorspaper":
+      win(userChoice, computerChoice);
+      break;
+
+    case "rockpaper":
+    case "scissorsrock":
+    case "paperscissors":
+      lose(userChoice, computerChoice);
+      break;
+
+    case "rockrock":
+    case "paperpaper":
+    case "scissorsscissors":
+      tie(userChoice, computerChoice);
+      break;
+  }
+
+  setTimeout(() => {
+    isClickable = true; // Allow clicks again after 1.7 seconds so the tie sound plays correctly
+  }, 1700); // Adjust time as needed
+
+};
+
+const resetScores = () => {
+  computerScore = 0;
+  computerScoreSpan.innerHTML = computerScore
+  userScore = 0;
+  userScoreSpan.innerHTML = userScore;
+};
+
+const main = () => {
+  rockDiv.addEventListener('click', () => game("rock"));
+
+  paperDiv.addEventListener('click', () => game("paper"));
+
+  scissorsDiv.addEventListener('click', () => game("scissors"));
+
+  resetButton.addEventListener('click', () => resetScores());
+};
+
+main();
+
+// Mute and Unmute Functionality
+const muteButton = document.getElementById('mute-button');
+let isMuted = false;
+
+muteButton.addEventListener('click', () => {
+  isMuted = !isMuted; // Toggle the mute state
+  const icon = muteButton.querySelector('i'); // Get the icon element
+  icon.classList.toggle('fa-volume-up', !isMuted);
+  icon.classList.toggle('fa-volume-mute', isMuted);
+
+  // Mute or unmute all audio elements
+  const audioElements = document.querySelectorAll('audio');
+  audioElements.forEach(audio => {
+    audio.muted = isMuted;
+  });
+});
+  </script>
+<footer class="footer">
+  Copyright © 2025 | Pantelis Vintsis (S1D4L1F3) | All Rights Reserved
+</footer>
+</body>
+</html>
