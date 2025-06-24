@@ -27,31 +27,24 @@ h1 {
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
   text-align: center;
+  display: flex;
+  flex-direction: column;
 }
 
-.game-card h2 {
-  font-size: 26px;
-  margin-bottom: 10px;
-}
-
-.game-card p {
-  font-size: 20px;
-  margin-bottom: 20px;
+.game-card-content {
+  flex-grow: 1;
 }
 
 .play-button {
-  background-color: #4CAF50;
-  color: #fff;
+  margin-top: auto;
   width: 100%;
   height: 40px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 22px;
-}
-
-.play-button:hover {
-  background-color: #3e8e41;
+  background-color: #19bb1e;
+  color: white;
 }
 
 .footer {
@@ -68,24 +61,40 @@ h1 {
   margin-bottom: 10px;
 }
 
+/* add this media query */
+@media only screen and (max-width: 768px) {
+  .game-card {
+    height: 250px; /* adjust this value to make all cards the same height */
+  }
+
+.play-button:hover {
+  background-color: #3e8e41;
+}
+}
   </style>
 </head>
 <body>
   <h1>Game Hub Station</h1>
   <div class="game-grid">
     <div class="game-card">
-      <h2>Hangman</h2>
-      <p>Guess the hidden word by suggesting letters.</p>
+      <div class="game-card-content">
+        <h2>Hangman</h2>
+        <p>Guess the hidden word by suggesting letters.</p>
+      </div>
       <button class="play-button" onclick="playHangman()">Play Game</button>
     </div>
     <div class="game-card">
-      <h2>Rock Paper Scissors</h2>
-      <p>Rock beats scissors, scissors beats paper, and paper beats rock.</p>
+      <div class="game-card-content">
+        <h2>Rock Paper Scissors</h2>
+        <p>Rock beats scissors, scissors beats paper, and paper beats rock.</p>
+      </div>
       <button class="play-button" onclick="playRockPaperScissors()">Play Game</button>
     </div>
     <div class="game-card">
-      <h2>Tic-Tac-Toe</h2>
-      <p>Score 3 same symbols in a row to win.</p>
+      <div class="game-card-content">
+        <h2>Tic-Tac-Toe</h2>
+        <p>Score 3 same symbols in a row to win.</p>
+      </div>
       <button class="play-button" onclick="playTicTacToe()">Play Game</button>
     </div>
   </div>
